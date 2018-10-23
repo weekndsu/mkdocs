@@ -12,7 +12,7 @@ F:\tinderbox\win-4.2\src\VBox\Main\src-server\MachineImpl.cpp[725] (long __thisc
 
   ```
   ansible_jenkins.vbox-tmp
-  ansible_jenkinsv.box-prev
+  ansible_jenkins.vbox-prev
   ```
 
 - 把两个文件做个备份
