@@ -1,9 +1,10 @@
 ## Harbor installation for ubuntu
 
-###SET UP THE REPOSITORY
+### SET UP THE REPOSITORY
 - check core version
 ```
 uname -r
+
 4.4.0-121-generic
 ```
 
@@ -28,7 +29,7 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
 - Verify that you now have the key with the fingerprint 9DC8 5822 9FC7 DD38 854A E2D8 8D81 803C 0EBF CD88, by searching for the last 8 characters of the fingerprint.
 ```
- apt-key fingerprint 0EBFCD88
+apt-key fingerprint 0EBFCD88
 
 pub   4096R/0EBFCD88 2017-02-22
       Key fingerprint = 9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88
@@ -62,6 +63,7 @@ docker-ce | 17.12.0~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenia
 - install a specific version
 ```
 apt-get install docker-ce=<VERSION>
+
 apt-cache install docker-ce=17.03.3~ce-0~ubuntu-xenial
 ```
 
