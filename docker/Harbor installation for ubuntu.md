@@ -67,7 +67,19 @@ apt-get install docker-ce=<VERSION>
 apt-cache install docker-ce=17.03.3~ce-0~ubuntu-xenial
 ```
 
-
+### install docker-compose
+- 1. download docker-compose
+```
+curl -L https://github.com/docker/compose/releases/download/1.13.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+```
+- 2. chmod+x
+```
+    chmod +x /usr/local/bin/docker-compose
+```
+- 3. verify
+```
+docker-compose -v
+```
 
 
 
