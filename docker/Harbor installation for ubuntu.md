@@ -66,11 +66,30 @@ apt-get install docker-ce=<VERSION>
 
 apt-cache install docker-ce=17.03.3~ce-0~ubuntu-xenial
 ```
+### modify storage location
+```
+vi /lib/systemd/system/docker.service
 
+ExecStart=/usr/bin/dockerd -H fd://
+--->
+ExecStart=/usr/bin/dockerd --graph /docker
+```
+
+### restart your docker
+```
+systemctl daemon-reload
+systemctl restart docker
+```
+### verify the storage location
+```
+docker info
+
+Docker Root Dir: /docker
+```
 ### install docker-compose
 - 1. download docker-compose
 ```
-curl -L https://github.com/docker/compose/releases/download/1.13.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+curl -L https://github.com/docker/compose/releases/download/1.17.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 ```
 - 2. chmod+x
 ```
