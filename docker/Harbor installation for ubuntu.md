@@ -5,6 +5,8 @@
 ```
 uname -r
 
+-----output------
+
 4.4.0-121-generic
 ```
 
@@ -31,6 +33,8 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 ```
 apt-key fingerprint 0EBFCD88
 
+-----output------
+
 pub   4096R/0EBFCD88 2017-02-22
       Key fingerprint = 9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88
 uid                  Docker Release (CE deb) <docker@docker.com>
@@ -56,6 +60,7 @@ apt-get update
 ```
 apt-cache madison docker-ce
 
+-----output------
 
 docker-ce | 17.12.0~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
 ```
@@ -63,15 +68,19 @@ docker-ce | 17.12.0~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenia
 - install a specific version
 ```
 apt-get install docker-ce=<VERSION>
-
+-----example-----
 apt-cache install docker-ce=17.03.3~ce-0~ubuntu-xenial
 ```
 ### modify storage location
 ```
 vi /lib/systemd/system/docker.service
 
+-----output------
+
 ExecStart=/usr/bin/dockerd -H fd://
---->
+
+-----replace------
+
 ExecStart=/usr/bin/dockerd --graph /docker
 ```
 
@@ -83,6 +92,8 @@ systemctl restart docker
 ### verify the storage location
 ```
 docker info
+
+-----output------
 
 Docker Root Dir: /docker
 ```
