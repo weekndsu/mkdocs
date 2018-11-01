@@ -68,7 +68,9 @@ docker-ce | 17.12.0~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenia
 - install a specific version
 ```
 apt-get install docker-ce=<VERSION>
+
 -----example-----
+
 apt-cache install docker-ce=17.03.3~ce-0~ubuntu-xenial
 ```
 ### modify storage location
