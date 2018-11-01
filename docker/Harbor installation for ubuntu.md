@@ -113,5 +113,12 @@ curl -L https://github.com/docker/compose/releases/download/1.17.0/docker-compos
 docker-compose -v
 ```
 
-
+### install harbor
+- requirements
+  docker 1.17&&docker-compose>1.10
+- download source code
+  wget https://storage.googleapis.com/harbor-releases/release-1.5.0/harbor-offline-installe-v1.5.1.tgz
+- update
+  cd harbor/
+  harbor.cfg
 
