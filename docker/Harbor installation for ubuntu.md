@@ -83,7 +83,8 @@ ExecStart=/usr/bin/dockerd -H fd://
 
 -----replace------
 
-ExecStart=/usr/bin/dockerd --graph /docker
+## docker 默认开始为https,harbor为http请求,--insecure-registry表示采用http+https混合模式
+ExecStart=/usr/bin/dockerd --graph /docker --insecure-registry=ip:5000
 ```
 
 ### restart your docker
@@ -130,7 +131,6 @@ docker-compose -v
 - Configuring Harbor listening on a customized port
 ```
 vi harbor.cfg
-
 hostname = ip:8888
 ```
 - remap port
@@ -141,10 +141,20 @@ vi docker-compose.yml
 port:
 80 ----> 8888
 443 ----> 8889
+5000 ----> 5000
 -----note------
-
-
+1. container_name: registry
+    restart: always
+    volumes:
+      - /data/registry:/storage:z
+      - ./common/config/registry/:/etc/registry/:z
     networks:
+      - harbor
+    ports:
+      - 5000:5000
+
+
+2.    networks:
       - harbor
     ports:
       - 8888:80
@@ -158,7 +168,7 @@ port:
  ./install
  ```
 
-- login 
+- web login 
 ```
 http://ip:8888
 ```
