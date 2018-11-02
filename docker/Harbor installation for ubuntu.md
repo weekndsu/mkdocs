@@ -127,5 +127,30 @@ docker-compose -v
   tar xvf harbor-offline-installer-v1.5.3.tgz
   cd harbor/
 ```
-- 
+- Configuring Harbor listening on a customized port
+```
+vi harbor.cfg
+
+hostname = ip:8888
+```
+- remap port
+```
+vi docker-compose.yml
+
+
+    networks:
+      - harbor
+    ports:
+      - 8888:80
+      - 8889:443
+      - 4443:4443
+```
  
+ - install harbor
+ ```
+ ./prepare
+ ./install
+ ```
+
+- login 
+http://ip:8888.
