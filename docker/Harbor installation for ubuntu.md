@@ -137,6 +137,12 @@ hostname = ip:8888
 ```
 vi docker-compose.yml
 
+-----note------
+port:
+80 ----> 8888
+443 ----> 8889
+-----note------
+
 
     networks:
       - harbor
