@@ -115,10 +115,17 @@ docker-compose -v
 
 ### install harbor
 - requirements
+```
   docker 1.17&&docker-compose>1.10
+```
 - download source code
-  wget https://storage.googleapis.com/harbor-releases/release-1.5.0/harbor-offline-installe-v1.5.1.tgz
+```
+  wget https://storage.googleapis.com/harbor-releases/release-1.5.0/harbor-offline-installe-v1.5.3.tgz
+```
 - update
+```
+  tar xvf harbor-offline-installer-v1.5.3.tgz
   cd harbor/
-  harbor.cfg
-
+```
+- 
+ 
