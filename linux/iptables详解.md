@@ -26,16 +26,17 @@ rules一般的定义为“如果数据包头符合设置的条件，就这样根
 
    **tables：**
 
-  filter表——三个链：INPUT、FORWARD、OUTPUT
-  作用：过滤数据包  内核模块：iptables_filter.
+- filter表——三个链：INPUT、FORWARD、OUTPUT
+    作用：过滤数据包  内核模块：iptables_filter.
 
-  Nat表——三个链：PREROUTING、POSTROUTING、OUTPUT
-  作用：用于网络地址转换（IP、端口） 内核模块：iptable_nat
+- Nat表——三个链：PREROUTING、POSTROUTING、OUTPUT
+    作用：用于网络地址转换（IP、端口） 内核模块：iptable_nat
 
-  Mangle表——五个链：PREROUTING、POSTROUTING、INPUT、OUTPUT、FORWARD
+- Mangle表——五个链：PREROUTING、POSTROUTING、INPUT、OUTPUT、FORWARD
+
   作用：修改数据包的服务类型、TTL、并且可以配置路由实现QOS内核模块：iptable_mangle(别看这个这么麻烦，咱们设置策略时几乎都不会用到它)
-  
-  Raw表——两个链：OUTPUT、PREROUTING
+
+- Raw表——两个链：OUTPUT、PREROUTING
   作用：决定数据包是否被状态跟踪机制处理  内核模块：iptable_raw
 
   **chains：**
@@ -54,13 +55,15 @@ rules一般的定义为“如果数据包头符合设置的条件，就这样根
 
   **第一种情况：入站数据流向**
 
-  从外界到达防火墙的数据包，先被PREROUTING规则链处理（是否修改数据包地址等），之后会进行路由选择（判断该数据包应该发往何处），如果数据包 的目标主机是防火墙本机（比如说Internet用户访问防火墙主机中的web服务器的数据包），那么内核将其传给INPUT链进行处理（决定是否允许通 过等），通过以后再交给系统上层的应用程序（比如Apache服务器）进行响应。
+从外界到达防火墙的数据包，先被PREROUTING规则链处理（是否修改数据包地址等），之后会进行路由选择（判断该数据包应该发往何处），如果数据包 的目标主机是防火墙本机（比如说Internet用户访问防火墙主机中的web服务器的数据包），那么内核将其传给INPUT链进行处理（决定是否允许通 过等），通过以后再交给系统上层的应用程序（比如Apache服务器）进行响应。
 
   **第二冲情况：转发数据流向**
-  来自外界的数据包到达防火墙后，首先被PREROUTING规则链处理，之后会进行路由选择，如果数据包的目标地址是其它外部地址（比如局域网用户通过网 关访问QQ站点的数据包），则内核将其传递给FORWARD链进行处理（是否转发或拦截），然后再交给POSTROUTING规则链（是否修改数据包的地 址等）进行处理。
+
+来自外界的数据包到达防火墙后，首先被PREROUTING规则链处理，之后会进行路由选择，如果数据包的目标地址是其它外部地址（比如局域网用户通过网 关访问QQ站点的数据包），则内核将其传递给FORWARD链进行处理（是否转发或拦截），然后再交给POSTROUTING规则链（是否修改数据包的地 址等）进行处理。
 
   **第三种情况：出站数据流向**
-  防火墙本机向外部地址发送的数据包（比如在防火墙主机中测试公网DNS服务器时），首先被OUTPUT规则链处理，之后进行路由选择，然后传递给POSTROUTING规则链（是否修改数据包的地址等）进行处理。
+
+防火墙本机向外部地址发送的数据包（比如在防火墙主机中测试公网DNS服务器时），首先被OUTPUT规则链处理，之后进行路由选择，然后传递给POSTROUTING规则链（是否修改数据包的地址等）进行处理。
 
 ###iptables command
 
@@ -135,97 +138,109 @@ iptables [-t 表名] 命令选项 ［链名］ ［条件匹配］ ［-j 目标�
 
   1. 拒绝进入防火墙的所有ICMP协议数据包
 
-    iptables -I INPUT -p icmp -j REJECT
+     iptables -I INPUT -p icmp -j REJECT
 
   2. 允许防火墙转发除ICMP协议以外的所有数据包
 
-    iptables -A FORWARD -p ! icmp -j ACCEPT
+     iptables -A FORWARD -p ! icmp -j ACCEPT
 
     说明：使用“！”可以将条件取反。   
 
   3. 拒绝转发来自192.168.1.10主机的数据，允许转发来自192.168.0.0/24网段的数据
 
-    iptables -A FORWARD -s 192.168.1.11 -j REJECT 
-    iptables -A FORWARD -s 192.168.0.0/24 -j ACCEPT
+     iptables -A FORWARD -s 192.168.1.11 -j REJECT 
 
-    说明：注意要把拒绝的放在前面不然就不起作用了啊。
+     iptables -A FORWARD -s 192.168.0.0/24 -j ACCEP
+
+     说明：注意要把拒绝的放在前面不然就不起作用了啊。
 
   4. 丢弃从外网接口（eth1）进入防火墙本机的源地址为私网地址的数据包
 
-    iptables -A INPUT -i eth1 -s 192.168.0.0/16 -j DROP 
-    iptables -A INPUT -i eth1 -s 172.16.0.0/12 -j DROP 
-    iptables -A INPUT -i eth1 -s 10.0.0.0/8 -j DROP
+     iptables -A INPUT -i eth1 -s 192.168.0.0/16 -j DROP 
+
+     iptables -A INPUT -i eth1 -s 172.16.0.0/12 -j DROP 
+
+     iptables -A INPUT -i eth1 -s 10.0.0.0/8 -j DROP
 
   5. 封堵网段（192.168.1.0/24），两小时后解封。
 
-    \# iptables -I INPUT -s 10.20.30.0/24 -j DROP 
-    \# iptables -I FORWARD -s 10.20.30.0/24 -j DROP 
-    \# at now 2 hours at> iptables -D INPUT 1 at> iptables -D FORWARD 1
+     iptables -I INPUT -s 10.20.30.0/24 -j DROP 
 
-    说明：这个策略咱们借助crond计划任务来完成，就再好不过了。
-    [1]   Stopped     at now 2 hour
+     iptables -I FORWARD -s 10.20.30.0/24 -j DROP 
+
+     at now 2 hours at> iptables -D INPUT 1 at> iptables -D FORWARD 
+
+     说明：这个策略咱们借助crond计划任务来完成，就再好不过了。
+
+     [1]   Stopped     at now 2 hour
 
   6. 只允许管理员从202.13.0.0/16网段使用SSH远程登录防火墙主机。
 
-    iptables -A INPUT -p tcp --dport 22 -s 202.13.0.0/16 -j ACCEPT 
-    iptables -A INPUT -p tcp --dport 22 -j DROP
+     iptables -A INPUT -p tcp --dport 22 -s 202.13.0.0/16 -j ACCEPT 
 
-    说明：这个用法比较适合对设备进行远程管理时使用，比如位于分公司中的SQL服务器需要被总公司的管理员管理时。   
+     iptables -A INPUT -p tcp --dport 22 -j DROP
+
+     说明：这个用法比较适合对设备进行远程管理时使用，比如位于分公司中的SQL服务器需要被总公司的管理员管理时。   
 
   7. 允许本机开放从TCP端口20-1024提供的应用服务。
 
-    iptables -A INPUT -p tcp --dport 20:1024 -j ACCEPT 
-    iptables -A OUTPUT -p tcp --sport 20:1024 -j ACCEPT 
+     iptables -A INPUT -p tcp --dport 20:1024 -j ACCEPT 
+
+     iptables -A OUTPUT -p tcp --sport 20:1024 -j ACCEPT 
 
   8. 允许转发来自192.168.0.0/24局域网段的DNS解析请求数据包。
 
-    iptables -A FORWARD -s 192.168.0.0/24 -p udp --dport 53 -j ACCEPT 
-    iptables -A FORWARD -d 192.168.0.0/24 -p udp --sport 53 -j ACCEPT 
+     iptables -A FORWARD -s 192.168.0.0/24 -p udp --dport 53 -j ACCEPT 
+
+     iptables -A FORWARD -d 192.168.0.0/24 -p udp --sport 53 -j ACCEPT 
 
   9. 禁止其他主机ping防火墙主机，但是允许从防火墙上ping其他主机
 
-    iptables -I INPUT -p icmp --icmp-type Echo-Request -j DROP 
-    iptables -I INPUT -p icmp --icmp-type Echo-Reply -j ACCEPT 
-    iptables -I INPUT -p icmp --icmp-type destination-Unreachable -j ACCEPT
+     iptables -I INPUT -p icmp --icmp-type Echo-Request -j DROP 
+
+     iptables -I INPUT -p icmp --icmp-type Echo-Reply -j ACCEPT 
+
+     iptables -I INPUT -p icmp --icmp-type destination-Unreachable -j ACCEPT
 
   10. 禁止转发来自MAC地址为00：0C：29：27：55：3F的和主机的数据包
 
-    iptables -A FORWARD -m mac --mac-source 00:0c:29:27:55:3F -j DROP
+      iptables -A FORWARD -m mac --mac-source 00:0c:29:27:55:3F -j DROP
 
-  说明：iptables中使用“-m 模块关键字”的形式调用显示匹配。咱们这里用“-m mac –mac-source”来表示数据包的源MAC地址。
+      说明：iptables中使用“-m 模块关键字”的形式调用显示匹配。咱们这里用“-m mac –mac-source”来表示数据包的源MAC地址。
 
   11. 允许防火墙本机对外开放TCP端口20、21、25、110以及被动模式FTP端口1250-1280
 
-    iptables -A INPUT -p tcp -m multiport --dport 20,21,25,110,1250:1280 -j ACCEPT
+      iptables -A INPUT -p tcp -m multiport --dport 20,21,25,110,1250:1280 -j ACCEPT
 
-    说明：这里用“-m multiport –dport”来指定目的端口及范围
+      说明：这里用“-m multiport –dport”来指定目的端口及范围
 
   12. 禁止转发源IP地址为192.168.1.20-192.168.1.99的TCP数据包。
 
-    iptables -A FORWARD -p tcp -m iprange --src-range 192.168.1.20-192.168.1.99 -j DROP
+      iptables -A FORWARD -p tcp -m iprange --src-range 192.168.1.20-192.168.1.99 -j DROP
 
-    说明：此处用“-m –iprange –src-range”指定IP范围。
+      说明：此处用“-m –iprange –src-range”指定IP范围。
 
   13. 禁止转发与正常TCP连接无关的非—syn请求数据包。
 
-    iptables -A FORWARD -m state --state NEW -p tcp ! --syn -j DROP
+      iptables -A FORWARD -m state --state NEW -p tcp ! --syn -j DROP
 
-    说明：“-m state”表示数据包的连接状态，“NEW”表示与任何连接无关的，新的嘛！
+      说明：“-m state”表示数据包的连接状态，“NEW”表示与任何连接无关的，新的嘛！
 
   14. 拒绝访问防火墙的新数据包，但允许响应连接或与已有连接相关的数据包
 
-    iptables -A INPUT -p tcp -m state --state NEW -j DROP 
-    iptables -A INPUT -p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT
+      iptables -A INPUT -p tcp -m state --state NEW -j DROP 
 
-    说明：“ESTABLISHED”表示已经响应请求或者已经建立连接的数据包，“RELATED”表示与已建立的连接有相关性的，比如FTP数据连接等。
+      iptables -A INPUT -p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+      说明：“ESTABLISHED”表示已经响应请求或者已经建立连接的数据包，“RELATED”表示与已建立的连接有相关性的，比如FTP数据连接等。
 
   15. 只开放本机的web服务（80）、FTP(20、21、20450-20480)，放行外部主机发住服务器其它端口的应答数据包，将其他入站数据包均予以丢弃处理。
 
-    iptables -I INPUT -p tcp -m multiport --dport 20,21,80 -j ACCEPT 
+      iptables -I INPUT -p tcp -m multiport --dport 20,21,80 -j ACCEPT 
 
-    iptables -I INPUT -p tcp --dport 20450:20480 -j ACCEPT 
+      iptables -I INPUT -p tcp --dport 20450:20480 -j ACCEPT 
 
-    iptables -I INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT 
+      iptables -I INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT 
 
-    iptables -P INPUT DROP
+      iptables -P INPUT DROP
 
