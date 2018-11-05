@@ -33,9 +33,8 @@ rules一般的定义为“如果数据包头符合设置的条件，就这样根
   作用：用于网络地址转换（IP、端口） 内核模块：iptable_nat
 
   Mangle表——五个链：PREROUTING、POSTROUTING、INPUT、OUTPUT、FORWARD
-
-作用：修改数据包的服务类型、TTL、并且可以配置路由实现QOS内核模块：iptable_mangle(别看这个这么麻烦，咱们设置策略时几乎都不会用到它)
-
+  作用：修改数据包的服务类型、TTL、并且可以配置路由实现QOS内核模块：iptable_mangle(别看这个这么麻烦，咱们设置策略时几乎都不会用到它)
+  
   Raw表——两个链：OUTPUT、PREROUTING
   作用：决定数据包是否被状态跟踪机制处理  内核模块：iptable_raw
 
